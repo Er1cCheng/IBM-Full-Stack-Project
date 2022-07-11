@@ -49,7 +49,34 @@
         {% endif %}
         <div class="card-columns-vertical mt-1">
         <h5 class="">Exam results</h5>
-            <!--HINT Display exam results-->
+        {% for lesson in course.lesson_set.all %}
+            <div class="card mt-1">
+                <div class="card-header"><h5>Lesson {{lesson.order|add:1}}: {{lesson.title}}</h5></div>
+                <!--div class="card-body">{{lesson.content}}</div-->
+                        {% for question in lesson.question_set.all %}
+                        <div class="card mt-1">
+                            <div class="card-header"><h5>{{ question.question_text}}</h5></div>
+                            {% csrf_token %}
+                            <div class="card-body">
+                                {% for choice in question.choice_set.all %}
+                                
+                                    {% if choice.is_correct %}
+                                        {% if choice.id in selected_ids %}
+                                            <h6><FONT COLOR=GREEN>Correct answer: {{choice.content}}</h6>
+                                        {% else %}
+                                            <h6><FONT COLOR=ORANGE>Not Selected: {{choice.content}}</h6>
+                                        {% endif%}
+                                    {% else %}
+                                        <h6><FONT COLOR=BLACK>{{choice.content}}</h6>
+                                    {% endif%}
+                                
+                                {% endfor %}
+                            </div>
+                        </div>
+                        
+                        {% endfor %}
+            </div>
+        {% endfor %}
         </div>
     </div>
 </body>

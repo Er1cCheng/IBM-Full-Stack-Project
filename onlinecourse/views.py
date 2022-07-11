@@ -128,7 +128,7 @@ def submit(request, course_id):
                 submitted_anwsers.append(choice_id)
     
     submission.save()
-    return HttpResponseRedirect(reverse(viewname='onlinecourse:show_exam_result', args=(submission.id,)))
+    return HttpResponseRedirect(reverse(viewname='onlinecourse:show_exam_result', args=(course.id,submission.id)))
 
 
 # <HINT> A example method to collect the selected choices from the exam form from the request object
@@ -150,21 +150,38 @@ def submit(request, course_id):
         # Calculate the total score
 def show_exam_result(request, course_id, submission_id):
     course = get_object_or_404(Course, pk=course_id)
-    submission = get_object_or_404(submission, pk=submission_id)
+    submission = get_object_or_404(Submission, pk=submission_id)
     context = {}
     choice_ids = []
     score = 0
     total_score = 0
 
     for choice in submission.choices.all():
-        total_score += choice.question.question_grade
         choice_ids.append(choice.id)
-        if choice.is_correct:
-            score += choice.question.question_grade
 
+    for lesson in course.lesson_set.all():
+        for question in lesson.question_set.all():
+            correct = True
+            total_score += question.question_grade
+            for answer in question.choice_set.all():
+                choosed = False
+                for choice in submission.choices.all():
+                    if answer == choice:
+                        if not answer.is_correct:
+                            correct = False
+                        else:
+                            choosed = True
+                if (not choosed) and answer.is_correct:
+                    correct = False
+
+            if correct:
+                score += question.question_grade
+
+    context['course_id'] = course.id
     context['course'] = course
+    context['submission'] = submission
     context['selected_ids'] = choice_ids
-    context['grade'] = score*100/total_score
+    context['grade'] = int(score*100/total_score)
     #context['total_grade'] = total_score
 
     return render(request, 'onlinecourse/exam_result_bootstrap.html', context)

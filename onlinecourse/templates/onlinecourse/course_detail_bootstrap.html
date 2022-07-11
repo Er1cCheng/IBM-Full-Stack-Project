@@ -43,12 +43,12 @@
     <div class="container-fluid">
             <h2>{{ course.name }}</h2>
             <div class="card-columns-vertical">
+                <form id="questionform" action="{% url 'onlinecourse:submit' course.id%}" method="post">
                 {% for lesson in course.lesson_set.all %}
                     <div class="card mt-1">
-                        <div class="card-header"><h5>Lesson {{lesson.order|add:1}}: {{lesson.title}}</h5></div>
+                        <!--div class="card-header"><h5>Lesson {{lesson.order|add:1}}: {{lesson.title}}</h5></div-->
                         <!--div class="card-body">{{lesson.content}}</div-->
                         
-                            <form id="questionform" action="point to a submit view" method="post">
                                 {% for question in lesson.question_set.all %}
                                 <div class="card mt-1">
                                     <div class="card-header"><h5>{{ question.question_text}}</h5></div>
@@ -69,10 +69,12 @@
                                 </div>
                                 
                                 {% endfor %}
-                            </form>
-                            <input class="btn btn-success btn-block" type="submit" value="Submit">
+                                
+                            
                     </div>
                 {% endfor %}
+                <input class="btn btn-success btn-block" type="submit" value="Submit">
+                </form>
             </div>
             <!-- Task: show questions and choices -->
             <!-- <HINT> Use Bootstrap Collapse to hide exam first, more details could be found here
