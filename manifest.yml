@@ -1,11 +1,11 @@
   applications:
   - name: onlinecourse
     routes:
-      - route: hongzhechen0.us-east.mybluemix.net
+      - route: hongzhechen02.us-east.mybluemix.net
     memory: 128M
     buildpack: python_buildpack
   - name: onlinecourse-nginx
     routes:
-      - route: hongzhechen0.us-east.cf.appdomain.cloud/static
+      - route: hongzhechen02.us-east.mybluemix.net/static
     memory: 128M
     buildpack: staticfile_buildpack
